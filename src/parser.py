@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import fake_useragent
+import json
 
 
 # Функция для отправки HTTP-запроса к указанному URL и получения HTML-страницы
@@ -18,6 +19,22 @@ def fetch_page(url):
         return None
 
 
+def parse_link_from_main_page_olx(path):
+    with open(path, 'r', encoding='utf-8') as file:
+        src = file.read()
+
+    soup = BeautifulSoup(src, 'lxml')
+    all_links_ad = soup.find_all(class_="css-rc5s2u")
+
+    all_links_ad_list = []
+    for item in all_links_ad:
+        link_ad = "https://www.olx.ua" + item.get('href')
+        all_links_ad_list.append(link_ad)
+
+    with open("all_links_ad_list.json", "w") as file:
+        json.dump(all_links_ad_list, file, indent=4, ensure_ascii=False)
+
+
 # Функция для извлечения данных объявлений из HTML-кода страницы
 def parse_listing(html):
     pass
@@ -29,6 +46,4 @@ def extract_details(listing):
 
 
 if __name__ == '__main__':
-    page_url = "https://www.olx.ua/uk/nedvizhimost/kvartiry/prodazha-kvartir/?currency=UAH&search%5Bfilter_enum_repair%5D%5B0%5D=1&search%5Bfilter_enum_furnish%5D%5B0%5D=yes&search%5Bfilter_enum_number_of_rooms_string%5D%5B0%5D=odnokomnatnye&search%5Bfilter_enum_apartments_object_type%5D%5B0%5D=primary_market&search%5Bfilter_enum_apartments_dev_type%5D%5B0%5D=elite"
-    page_html = fetch_page(page_url)
-    parse_listing(page_html)
+    pass
