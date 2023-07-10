@@ -1,11 +1,17 @@
 import parser
+import json
 
 
 # Функция для вызова парсера и обработки страницы с объявлениями недвижимости по указанному URL
 def parse_estate_page(url):
-    # with open("olx.html", 'w', encoding='utf-8') as file:
-    #     file.write(parser.fetch_page(url))
-    parser.parse_link_from_main_page_olx("olx.html")
+    parser.parse_link_from_main_page_olx(url)
+
+    with open("temp/all_links_ad_list.json", 'r') as file:
+        all_links = json.load(file)
+
+    ad_dict = parser.parse_link_from_ad_page_olx(all_links[0])
+
+    print(ad_dict)
 
 
 # Функция для сохранения полученных данных в CSV файл
