@@ -80,7 +80,7 @@ def param_list(url=None):
 
 def generate_file_for_new_building():
     urls_list = get_urls_for_new_building()
-    with open("new_building.csv", 'w', newline='', encoding='utf-8') as fh:
+    with open("src/data/domria/new_building.csv", 'w', newline='', encoding='utf-8') as fh:
         writer = csv.DictWriter(fh, fieldnames=field_names_for_new_building)
         writer.writeheader()
         for url in urls_list:
