@@ -36,7 +36,7 @@ def user_request():
     while True:
         user_text = input("Введіть назву міста: ")
         if user_text.lower() in [key.lower() for key in cities_dict.keys()]:
-            return cities_dict[user_text.capitalize()].lower()
+            return [user_text, cities_dict[user_text.capitalize()].lower()]
 
         else:
             print("Некоректне імя міста, імя міста повинно бути Українською")
