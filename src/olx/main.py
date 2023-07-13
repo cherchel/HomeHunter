@@ -6,7 +6,7 @@ import json
 def parse_estate_page(url):
     parser.parse_link_from_main_page_olx(url)
 
-    with open("temp/all_links_ad_list.json", 'r') as file:
+    with open("src/olx/temp/all_links_ad_list.json", 'r') as file:
         all_links = json.load(file)
 
     ad_dict = parser.parse_link_from_ad_page_olx(all_links[0])
