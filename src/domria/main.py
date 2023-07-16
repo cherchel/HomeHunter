@@ -1,6 +1,6 @@
 cities_dict = {'Київ': 'Kiev', 'Харків': 'Kharkov', 'Одеса': 'Odessa', 'Дніпро': 'Dnepr', 'Донецьк': 'Donetsk',
                'Запоріжжя': 'Zaporozhye', 'Львів': 'Lviv', 'Кривий Ріг': 'Krivoy Rog', 'Миколаїв': 'Nikolaev',
-               'Маріуполь': 'Mariupol', 'Вінниця': 'Vinnitsa', 'Херсон': 'Kherson', 'Полтава': 'Poltava',
+               'Маріуполь': 'Mariupol', 'Вінниця': 'Vinnitsa', 'Вараш': 'Varash', 'Херсон': 'Kherson', 'Полтава': 'Poltava',
                'Чернігів': 'Chernigov', 'Черкаси': 'Cherkasy', 'Житомир': 'Zhitomir', 'Суми': 'Sumy',
                'Хмельницький': 'Khmelnitsky', 'Рівне': 'Rovno', 'Чернівці': 'Chernivtsi', 'Тернопіль': 'Ternopil',
                "Кам'янське": 'Kamenskoye', 'Івано-Франківськ': 'Ivano-Frankivsk', 'Кременчук': 'Kremenchug',
