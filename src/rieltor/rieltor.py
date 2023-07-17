@@ -1,18 +1,18 @@
-import datetime
-import os
-import re
-import json, csv
-from bs4 import BeautifulSoup
-import time
 import asyncio
+import csv
+import datetime
+import json
+import re
+import time
 import aiohttp
+from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
-
 headers = {
-    "User-Agent": UserAgent()
+    "User-Agent": str(UserAgent().random)
 }
 url_global = "https://rieltor.ua/flats-sale/#10.5/50.4333/30.5167"
+
 house_data = []
 
 start_time = time.time()
@@ -49,12 +49,12 @@ async def get_all_pages(session, page, pages_count):
                 h_address = "-"
 
             try:
-                h_city = hi.find("a", {"temp_data-analytics-event": "card-click-region"}).text
+                h_city = hi.find("a", {"data-analytics-event": "card-click-region"}).text
             except:
                 h_city = "-"
 
             try:
-                h_district = hi.find("a", {"temp_data-analytics-event": "card-click-region"}).next_sibling.next_sibling.text.strip()
+                h_district = hi.find("a", {"data-analytics-event": "card-click-region"}).next_sibling.next_sibling.text.strip()
             except:
                 h_district = "-"
 
@@ -90,7 +90,7 @@ async def get_all_pages(session, page, pages_count):
                 h_author = hi.find("span", class_="catalog-card-author-title").text.strip()
             except:
                 h_author = hi.find("a", class_="catalog-card-author-title").text.strip()
-            h_telephone = hi.find("div", {"temp_data-jss": "ovContacts"}).text.strip().replace("\n", ", ")
+            h_telephone = hi.find("div", {"data-jss": "ovContacts"}).text.strip().replace("\n", ", ")
 
             h_description = await get_description(session, h_url)
 
@@ -168,34 +168,11 @@ def main():
 
     house_data = delete_repeats()
 
-    with open(f"src/rieltor/temp_data/house_scaper_{cur_time}.json", "w", encoding="utf-8") as file:
+    with open(f"src/rieltor/temp_data/rieltor_{cur_time}.json", "w", encoding="utf-8") as file:
         json.dump(house_data, file, indent=4, ensure_ascii=False)
 
-    with open(f"src/data/rieltor/house_scaper_{cur_time}.csv", "w", encoding="utf-8-sig", newline="") as file:
-        writer = csv.writer(file, delimiter=',')
-
-        writer.writerow(
-            (
-                "Стоимость",
-                "Стоимость / м^2",
-                "Город",
-                "Адрес",
-                "Район",
-                "Микрорайон",
-                "ЖК",
-                "Метро",
-                "Этаж",
-                "Кол-во комнат",
-                "Площадь",
-                "Дата публикации",
-                "Контакты",
-                "Ссылка",
-                "Описание"
-            )
-        )
-
     for house in house_data:
-        with open(f"src/data/rieltor/house_scaper_{cur_time}.csv", "a", encoding="utf-8-sig", newline="") as file:
+        with open(f"src/data/rieltor/rieltor_{cur_time}.csv", "a", encoding="utf-8-sig", newline="") as file:
             writer = csv.writer(file, delimiter=',')
 
             writer.writerow(
