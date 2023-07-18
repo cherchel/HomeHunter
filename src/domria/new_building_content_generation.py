@@ -1,16 +1,13 @@
 import csv
-import requests
 import cloudscraper
 from get_all_urls import get_urls_for_new_building
 from lxml import html
-from main import url_address
 from field_names.new_building import field_names_for_new_building
 from xpaths.new_building import xpaths_for_new_building
 
 
 def param_list_for_new_building(url=None):
-    # url = "/novostroyka-zhk-kyrylivskyi-gai-4597/"
-    # url = '/uk/novostroyka-zhk-kontynental-6850/'
+    url_address = "https://dom.ria.com"
     my_dict = {}
     scraper = cloudscraper.create_scraper()
     response = scraper.get(url_address + url)
@@ -20,7 +17,6 @@ def param_list_for_new_building(url=None):
     div_blocks = tree.xpath('//*[@id="content"]/div[2]/main/div')
     leader_blocks = tree.xpath('//*[@id="content"]/div[2]/main/div/div/div[2]')
 
-    print(url)
     if len(div_blocks) > 0:
         print(len(div_blocks))
         for i in div_blocks:
@@ -37,10 +33,6 @@ def param_list_for_new_building(url=None):
         if leader_block_class != "sc-u8nb37-0 ejozWL":
             parent = leader_blocks[0].getparent()
             parent.remove(leader_blocks[0])
-    try:
-        print(tree.xpath(xpaths_for_new_building[0])[0].text_content())
-    except:
-        pass
 
     skip_next = False
     for num, val in enumerate(field_names_for_new_building):
@@ -89,19 +81,15 @@ def param_list_for_new_building(url=None):
                 my_dict[val] = "None"
         except:
             pass
-    print(my_dict)
+
     return my_dict
 
 
-# print(param_list())
-
-
-
-def generate_file_for_new_building():
-    urls_list = get_urls_for_new_building()
+def generate_file_for_new_building(city):
+    urls_list = get_urls_for_new_building(city)
     print(urls_list)
     print(len(urls_list))
-    with open("./new_building.csv", 'w', newline='', encoding='utf-8') as fh:
+    with open("../data/domria/new_building.csv", 'w', newline='', encoding='utf-8') as fh:
         writer = csv.DictWriter(fh, fieldnames=field_names_for_new_building)
         writer.writeheader()
         for url in urls_list:

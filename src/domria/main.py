@@ -1,6 +1,10 @@
+from new_building_content_generation import generate_file_for_new_building
+from resale_content_generation import generate_file_for_resale
+
 cities_dict = {'Київ': 'Kiev', 'Харків': 'Kharkov', 'Одеса': 'Odessa', 'Дніпро': 'Dnepr', 'Донецьк': 'Donetsk',
                'Запоріжжя': 'Zaporozhye', 'Львів': 'Lviv', 'Кривий Ріг': 'Krivoy Rog', 'Миколаїв': 'Nikolaev',
-               'Маріуполь': 'Mariupol', 'Вінниця': 'Vinnitsa', 'Вараш': 'Varash', 'Херсон': 'Kherson', 'Полтава': 'Poltava',
+               'Маріуполь': 'Mariupol', 'Вінниця': 'Vinnitsa', 'Вараш': 'Varash', 'Херсон': 'Kherson',
+               'Полтава': 'Poltava',
                'Чернігів': 'Chernigov', 'Черкаси': 'Cherkasy', 'Житомир': 'Zhitomir', 'Суми': 'Sumy',
                'Хмельницький': 'Khmelnitsky', 'Рівне': 'Rovno', 'Чернівці': 'Chernivtsi', 'Тернопіль': 'Ternopil',
                "Кам'янське": 'Kamenskoye', 'Івано-Франківськ': 'Ivano-Frankivsk', 'Кременчук': 'Kremenchug',
@@ -29,16 +33,28 @@ cities_dict = {'Київ': 'Kiev', 'Харків': 'Kharkov', 'Одеса': 'Ode
                'Щастя': 'Schastie', 'Южноукраїнськ': 'Yuzhnoukrainsk', 'Ялта': 'Yalta'}
 
 
-url_address = "https://dom.ria.com"
+def user_request(custum_city):
+    user_text = custum_city
+    if user_text.lower() in [key.lower() for key in cities_dict.keys()]:
+        return [user_text, cities_dict[user_text.capitalize()].lower()]
+    else:
+        print("Некоректне імя міста, імя міста повинно бути Українською")
+        return False
 
 
-def user_request():
-    while True:
-        user_text = input("Введіть назву міста: ")
-        if user_text.lower() in [key.lower() for key in cities_dict.keys()]:
-            return [user_text, cities_dict[user_text.capitalize()].lower()]
+def new_generation(build_type, custum_city):
 
+    city = user_request(custum_city)
+    if city:
+        if build_type == "new":
+            generate_file_for_new_building(city)
+        elif build_type == "resale":
+            generate_file_for_resale(city)
+        elif build_type == "all":
+            generate_file_for_new_building(city)
+            generate_file_for_resale(city)
         else:
-            print("Некоректне імя міста, імя міста повинно бути Українською")
+            print("incorrect type")
 
-city = user_request()
+
+new_generation("resale", 'Одеса')
