@@ -7,13 +7,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from random import randint
-from main import city
 import csv
 
 from field_names.resale import field_names_for_resale
 
 
-def param_list_for_resale():
+def param_list_for_resale(city):
     """options for run selenium locally """
     driver_service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=driver_service)
@@ -31,7 +30,7 @@ def param_list_for_resale():
     driver.find_element(By.XPATH, '//a[contains(text(),"Шукати")]').click()
     time.sleep(2)
     # Delete default city
-    driver.find_element(By.CSS_SELECTOR, "#city path").click()
+    driver.find_element(By.CSS_SELECTOR, '#city > svg').click()
     time.sleep(1)
     # Click on the input
     driver.find_element(By.ID, "autocomplete").click()
@@ -53,14 +52,15 @@ def param_list_for_resale():
         max_pages = int(list_pages[-1].text)
         print(max_pages)
         for i in range(max_pages):
+            print('page:', i+1)
             # Get all announcement on the page and add in list
             sections_list = wait.until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.realty-photo-rotate [href]')))
             for announcement in range(1, len(sections_list) + 1):
                 announcement_dict = {}
                 xpath = f'{general_xpath}[{announcement}]'
-                print(driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
-                    'href'))
+                # print(driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
+                #     'href'))
                 location = driver.find_elements(By.XPATH, f"{xpath}/div[2]/span")
                 if len(location) == 1:
                     try:
@@ -168,13 +168,11 @@ def param_list_for_resale():
     return all_announcement
 
 
-def generate_file_for_new_building():
-    param_list = param_list_for_resale()
-    with open("./resale.csv", 'w', newline='', encoding='utf-8') as fh:
+def generate_file_for_resale(city):
+    param_list = param_list_for_resale(city)
+    with open("../data/domria/resale.csv", 'w', newline='', encoding='utf-8') as fh:
         writer = csv.DictWriter(fh, fieldnames=field_names_for_resale)
         writer.writeheader()
         for element in param_list:
             writer.writerow(element)
 
-
-generate_file_for_new_building()

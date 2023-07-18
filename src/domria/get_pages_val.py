@@ -1,12 +1,10 @@
 from lxml import html
-import requests
-import json
-from main import city, url_address
 import cloudscraper
 
 
 # get num of pages
-def get_num_new_building():
+def get_num_new_building(city):
+    url_address = "https://dom.ria.com"
     if city:
         scraper = cloudscraper.create_scraper()
         response = scraper.get(f"{url_address}/uk/novostroyki/{city[1]}/?isChangeRadius=true")
