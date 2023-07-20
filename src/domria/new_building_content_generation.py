@@ -8,6 +8,7 @@ from xpaths.new_building import xpaths_for_new_building
 
 def param_list_for_new_building(url=None):
     url_address = "https://dom.ria.com"
+    print(url_address + url)
     my_dict = {}
     scraper = cloudscraper.create_scraper()
     response = scraper.get(url_address + url)
@@ -19,7 +20,7 @@ def param_list_for_new_building(url=None):
 
     if len(div_blocks) > 0:
         print(len(div_blocks))
-        for i in div_blocks:
+        for _ in div_blocks:
             div_blocks = tree.xpath('//*[@id="content"]/div[2]/main/div')
             first_block_class = div_blocks[0].get('class')
             if first_block_class != "twoColumnOnDesktopContainer":
