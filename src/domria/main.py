@@ -57,4 +57,4 @@ def new_generation(build_type, custum_city):
             print("incorrect type")
 
 
-new_generation("resale", 'Одеса')
+new_generation("new", 'Одеса')
