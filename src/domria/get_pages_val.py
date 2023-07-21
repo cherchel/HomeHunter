@@ -1,13 +1,12 @@
 from lxml import html
-import cloudscraper
+import requests
 
 
 # get num of pages
 def get_num_new_building(city):
     url_address = "https://dom.ria.com"
     if city:
-        scraper = cloudscraper.create_scraper()
-        response = scraper.get(f"{url_address}/uk/novostroyki/{city[1]}/?isChangeRadius=true")
+        response = requests.get(f"{url_address}/uk/novostroyki/{city[1]}/?isChangeRadius=true")
         tree = html.fromstring(response.content)
         page_buttons = tree.xpath('//*[@id="pagination"]/div/div/div/a')
         if len(page_buttons) >= 1:

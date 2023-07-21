@@ -1,5 +1,5 @@
 from lxml import html
-import cloudscraper
+import requests
 from get_pages_val import get_num_new_building
 
 
@@ -7,13 +7,12 @@ def get_urls_for_new_building(city):
     url_list = []
     pages_val = get_num_new_building(city)
     print(pages_val)
-    scraper = cloudscraper.create_scraper()
     for page in range(1, pages_val + 1):
         print("Get urls from page:", page)
         if page == 1:
-            response = scraper.get(f"https://dom.ria.com/uk/novostroyki/{city[1]}/?isChangeRadius=true")
+            response = requests.get(f"https://dom.ria.com/uk/novostroyki/{city[1]}/?isChangeRadius=true")
         else:
-            response = scraper.get(f"https://dom.ria.com/uk/novostroyki/{city[1]}/?isChangeRadius=true&page={page}")
+            response = requests.get(f"https://dom.ria.com/uk/novostroyki/{city[1]}/?isChangeRadius=true&page={page}")
         tree = html.fromstring(response.content)
 
         # Sometimes the page displays information as the first element, need delete this element for correct work

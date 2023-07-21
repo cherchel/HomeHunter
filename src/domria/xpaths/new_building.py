@@ -3,7 +3,7 @@ xpaths_for_new_building = [
     '//*[@class="leftContainer"]/div[3]/div[1]/a[2]',  # Район
     '//*[@class="leftContainer"]/div[3]/div[1]/a[3]',  # Вулиця
     '//*[@class="leftContainer"]/div[3]/h1',  # Назва ЖК
-    '//*[@temp_data-tm="buildClassName"]',  # Клас ЖК
+    '//*[@data-tm="buildClassName"]',  # Клас ЖК
     # Однокімнатні квартири
     '//*[contains(@class, "plansRow")][1]/td[2]/div/div',
     # Площа від
@@ -33,5 +33,5 @@ xpaths_for_new_building = [
     # Час до метро
     '//*[@temp_data-tm="map_block"]/div[1]/div[1]/table//tr',
     # Все
-    '//*[@id="content"]/div[2]/main/div[3]/div'
+    '//*[@class="content"]/div[3]/div'
 ]
