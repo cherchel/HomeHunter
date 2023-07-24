@@ -11,6 +11,8 @@ import csv
 
 from field_names.resale import field_names_for_resale
 
+general_xpath = '//*[@id="domSearchPanel"]/div[1]/section'
+
 
 def generate_file_for_resale(city):
     with open("../data/domria/resale.csv", 'w', newline='', encoding='utf-8') as fh:
@@ -18,8 +20,12 @@ def generate_file_for_resale(city):
         writer.writeheader()
 
         """options for run selenium locally """
-        driver_service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=driver_service)
+        try:
+            driver_service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=driver_service)
+        except:
+            driver = webdriver.Chrome()
+
         driver.set_window_size(1920, 1080)
         # Going to url
         driver.get("https://dom.ria.com/uk/")
@@ -50,111 +56,92 @@ def generate_file_for_resale(city):
         # If we have buttons, get the maximum value of the page and run a loop to get all the urls.
 
         wait = WebDriverWait(driver, 100)
-        general_xpath = '//*[@id="domSearchPanel"]/div[1]/section'
         if len(list_pages) > 0:
             max_pages = int(list_pages[-1].text)
             print(max_pages)
             for i in range(max_pages):
                 print('page:', i + 1)
                 # Get all announcement on the page and add in list
-                sections_list = wait.until(
-                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.realty-photo-rotate [href]')))
-                for announcement in range(1, len(sections_list) + 1):
-                    announcement_dict = {}
-                    xpath = f'{general_xpath}[{announcement}]'
-                    # print(driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
-                    #     'href'))
-                    location = driver.find_elements(By.XPATH, f"{xpath}/div[2]/span")
-                    if len(location) == 1:
-                        try:
-                            announcement_dict['Місто'] = location[0].text.split(", ")[1]
-                            if location[0].text.split(",")[0] != location[0].text.split(", ")[1]:
-                                announcement_dict['Район'] = location[0].text.split(",")[0]
-                            else:
-                                announcement_dict['Район'] = "-"
-                        except:
-                            announcement_dict['Місто'] = location[0].text
-                            announcement_dict['Район'] = "-"
-
-                    elif len(location) == 2:
-                        try:
-                            announcement_dict['Місто'] = location[1].text.split(", ")[1]
-                            announcement_dict['ЖК'] = location[0].text
-                            if location[1].text.split(",")[0] != location[1].text.split(", ")[1]:
-                                announcement_dict['Район'] = location[1].text.split(",")[0]
-                            else:
-                                announcement_dict['Район'] = "-"
-                        except:
-                            announcement_dict['Місто'] = location[1].text
-                            announcement_dict['Район'] = "-"
-                            announcement_dict['ЖК'] = location[0].text
-
-                    announcement_dict['Вулиця'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").text
-                    announcement_dict['Кількість кімнат'] = driver.find_element(By.XPATH,
-                                                                                f"{xpath}/div[2]/div[2]/span[1]").text
-                    announcement_dict['Загальна площа'] = driver.find_element(By.XPATH,
-                                                                              f"{xpath}/div[2]/div[2]/span[2]").text
-                    announcement_dict['Поверх'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/div[2]/span[3]").text
-                    announcement_dict['Ціна за об\'єкт в дол'] = driver.find_element(By.XPATH,
-                                                                                     f"{xpath}/div[2]/div[1]/div/b").text
-                    announcement_dict['Ціна за м2 в дол'] = driver.find_element(By.XPATH,
-                                                                                f"{xpath}/div[2]/div[1]/div/span").text
-                    announcement_dict['URL'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
-                        'href')
-
-                    writer.writerow(announcement_dict)
+                action(writer, driver, wait)
 
                 try:
                     # We are trying to click the next page button, for this site, simply clicking this button does not work
                     element = driver.find_element(By.CLASS_NAME, 'text-r')
                     driver.execute_script("arguments[0].click();", element)
-                    time.sleep(randint(7, 12))
+                    time.sleep(randint(6, 16))
                 except:
                     # for last page
                     pass
 
         else:
-            sections_list = wait.until(
-                EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.realty-photo-rotate [href]')))
-            print(len(sections_list))
-            for announcement in range(1, len(sections_list) + 1):
-                announcement_dict = {}
-                xpath = f'{general_xpath}[{announcement}]'
-                location = driver.find_elements(By.XPATH, f"{xpath}/div[2]/span")
-                if len(location) == 1:
-                    try:
-                        announcement_dict['Місто'] = location[0].text.split(", ")[1]
-                        if location[0].text.split(",")[0] != location[0].text.split(", ")[1]:
-                            announcement_dict['Район'] = location[0].text.split(",")[0]
-                        else:
-                            announcement_dict['Район'] = "-"
-                    except:
-                        announcement_dict['Місто'] = location[0].text
-                        announcement_dict['Район'] = "-"
+            action(writer, driver, wait)
 
-                elif len(location) == 2:
-                    try:
-                        announcement_dict['Місто'] = location[1].text.split(", ")[1]
-                        announcement_dict['ЖК'] = location[0].text
-                        if location[1].text.split(",")[0] != location[1].text.split(", ")[1]:
-                            announcement_dict['Район'] = location[1].text.split(",")[0]
-                        else:
-                            announcement_dict['Район'] = "-"
-                    except:
-                        announcement_dict['Місто'] = location[1].text
-                        announcement_dict['Район'] = "-"
-                        announcement_dict['ЖК'] = location[0].text
 
-                announcement_dict['Вулиця'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").text
-                announcement_dict['Кількість кімнат'] = driver.find_element(By.XPATH,
-                                                                            f"{xpath}/div[2]/div[2]/span[1]").text
-                announcement_dict['Загальна площа'] = driver.find_element(By.XPATH,
-                                                                          f"{xpath}/div[2]/div[2]/span[2]").text
-                announcement_dict['Поверх'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/div[2]/span[3]").text
-                announcement_dict['Ціна за об\'єкт в дол'] = driver.find_element(By.XPATH,
-                                                                                 f"{xpath}/div[2]/div[1]/div/b").text
-                announcement_dict['Ціна за м2 в дол'] = driver.find_element(By.XPATH,
-                                                                            f"{xpath}/div[2]/div[1]/div/span").text
-                announcement_dict['URL'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
-                    'href')
-                writer.writerow(announcement_dict)
+def action(writer, driver, wait):
+    sections_list = wait.until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.realty-photo-rotate [href]')))
+    for announcement in range(1, len(sections_list) + 1):
+        announcement_dict = {}
+        xpath = f'{general_xpath}[{announcement}]'
+        # print(driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
+        #     'href'))
+        location = driver.find_elements(By.XPATH, f"{xpath}/div[2]/span")
+        if len(location) == 1:
+            try:
+                announcement_dict['Місто'] = location[0].text.split(", ")[1]
+                if location[0].text.split(",")[0] != location[0].text.split(", ")[1]:
+                    announcement_dict['Район'] = location[0].text.split(",")[0]
+                else:
+                    announcement_dict['Район'] = "-"
+            except:
+                announcement_dict['Місто'] = location[0].text
+                announcement_dict['Район'] = "-"
+
+        elif len(location) == 2:
+            try:
+                announcement_dict['Місто'] = location[1].text.split(", ")[1]
+                announcement_dict['ЖК'] = location[0].text
+                if location[1].text.split(",")[0] != location[1].text.split(", ")[1]:
+                    announcement_dict['Район'] = location[1].text.split(",")[0]
+                else:
+                    announcement_dict['Район'] = "-"
+            except:
+                announcement_dict['Місто'] = location[1].text
+                announcement_dict['Район'] = "-"
+                announcement_dict['ЖК'] = location[0].text
+
+        try:
+            announcement_dict['Вулиця'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").text
+        except:
+            announcement_dict['Вулиця'] = ""
+        try:
+            announcement_dict['Кількість кімнат'] = driver.find_element(By.XPATH,
+                                                                        f"{xpath}/div[2]/div[2]/span[1]").text
+        except:
+            announcement_dict['Кількість кімнат'] = ""
+        try:
+            announcement_dict['Загальна площа'] = driver.find_element(By.XPATH,
+                                                                      f"{xpath}/div[2]/div[2]/span[2]").text
+        except:
+            announcement_dict['Загальна площа'] = ""
+        try:
+            announcement_dict['Поверх'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/div[2]/span[3]").text
+        except:
+            announcement_dict['Поверх'] = ""
+        try:
+            announcement_dict['Ціна за об\'єкт в дол'] = driver.find_element(By.XPATH,
+                                                                             f"{xpath}/div[2]/div[1]/div/b").text
+        except:
+            announcement_dict['Ціна за об\'єкт в дол'] = ""
+        try:
+            announcement_dict['Ціна за м2 в дол'] = driver.find_element(By.XPATH,
+                                                                        f"{xpath}/div[2]/div[1]/div/span").text
+        except:
+            announcement_dict['Ціна за м2 в дол'] = ""
+        try:
+            announcement_dict['URL'] = driver.find_element(By.XPATH, f"{xpath}/div[2]/h3/a").get_attribute(
+                'href')
+        except:
+            announcement_dict['URL'] = ""
+
+        writer.writerow(announcement_dict)
