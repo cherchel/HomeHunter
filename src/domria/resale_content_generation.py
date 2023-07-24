@@ -15,7 +15,7 @@ general_xpath = '//*[@id="domSearchPanel"]/div[1]/section'
 
 
 def generate_file_for_resale(city):
-    with open("../data/domria/resale.csv", 'w', newline='', encoding='utf-8') as fh:
+    with open(f"../data/domria/{city}_resale.csv", 'w', newline='', encoding='utf-8') as fh:
         writer = csv.DictWriter(fh, fieldnames=field_names_for_resale)
         writer.writeheader()
 
