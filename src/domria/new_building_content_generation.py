@@ -98,7 +98,7 @@ def generate_file_for_new_building(city):
     urls_list = get_urls_for_new_building(city)
     print(urls_list)
     print(len(urls_list))
-    with open("../data/domria/new_building.csv", 'w', newline='', encoding='utf-8') as fh:
+    with open(f"../data/domria/{city}_new_building.csv", 'w', newline='', encoding='utf-8') as fh:
         writer = csv.DictWriter(fh, fieldnames=field_names_for_new_building)
         writer.writeheader()
         for url in urls_list:

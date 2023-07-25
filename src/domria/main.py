@@ -42,7 +42,7 @@ def user_request(custum_city):
         return False
 
 
-def new_generation(build_type, custum_city):
+def domria_new_generation(build_type, custum_city):
 
     city = user_request(custum_city)
     if city:
@@ -57,4 +57,4 @@ def new_generation(build_type, custum_city):
             print("incorrect type")
 
 
-new_generation("new", 'Одеса')
+# new_generation("resale", 'Одеса')
