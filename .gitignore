@@ -161,3 +161,4 @@ cython_debug/
 pycache/
 
 src/rieltor/temp_data
+src/data/rieltor/
